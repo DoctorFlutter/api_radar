@@ -4,11 +4,12 @@ import 'src/ui/radar_button.dart';
 // Export parts for the user
 export 'src/interceptor/radar_interceptor.dart';
 export 'src/controller/radar_controller.dart';
+export 'src/models/api_log.dart';
 
 class ApiRadar extends StatelessWidget {
   final Widget child;
   final bool enabled;
-  final GlobalKey<NavigatorState>? navigatorKey; // 1. Add this key
+  final GlobalKey<NavigatorState>? navigatorKey;
 
   const ApiRadar({
     super.key,
@@ -19,18 +20,22 @@ class ApiRadar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // If disabled (e.g. Release Mode), just return the app
     if (!enabled) return child;
 
     return Directionality(
       textDirection: TextDirection.ltr,
-      // 2. Wrap everything in an Overlay. This fixes "No Overlay widget found"!
+      // FIX: We MUST wrap everything in an Overlay.
+      // The Draggable widget searches up the tree for this.
       child: Overlay(
         initialEntries: [
           OverlayEntry(
             builder: (context) => Stack(
               children: [
-                child, // The User's App (Navigator)
-                // Pass the key to the button so it can find the Navigator
+                // 1. The User's App (The background)
+                child,
+
+                // 2. The Floating Radar Button (On top)
                 RadarButton(navigatorKey: navigatorKey),
               ],
             ),

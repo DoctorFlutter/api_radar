@@ -5,7 +5,8 @@ import '../models/api_log.dart';
 
 class RadarInterceptor extends Interceptor {
   final _controller = RadarController();
-  final _startTimeMap = <String, DateTime>{}; // Temporary storage for start times
+  final _startTimeMap =
+      <String, DateTime>{}; // Temporary storage for start times
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -34,7 +35,11 @@ class RadarInterceptor extends Interceptor {
   }
 
   // Helper function to bundle data and save it
-  void _logTransaction(RequestOptions options, {Response? response, DioException? error}) {
+  void _logTransaction(
+    RequestOptions options, {
+    Response? response,
+    DioException? error,
+  }) {
     final id = options.extra['radar_id'] as String? ?? '';
     final startTime = _startTimeMap[id] ?? DateTime.now();
     final endTime = DateTime.now();

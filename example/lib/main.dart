@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:api_radar/api_radar.dart'; // Import your package
+import 'package:api_radar/api_radar.dart';
 
-// 1. GLOBAL KEY DEFINITION (Must be here!)
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
@@ -18,10 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Api Radar Test',
-
-      // 2. PASS KEY TO MATERIAL APP
       navigatorKey: navigatorKey,
-
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.greenAccent,
@@ -31,16 +25,13 @@ class MyApp extends StatelessWidget {
           secondary: Colors.blueAccent,
         ),
       ),
-
-      // 3. PASS THE SAME KEY TO API RADAR
       builder: (context, child) {
         return ApiRadar(
           enabled: true,
-          navigatorKey: navigatorKey, // <--- THIS WAS MISSING
+          navigatorKey: navigatorKey,
           child: child!,
         );
       },
-
       home: const HomePage(),
     );
   }
@@ -59,21 +50,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     _dio = Dio(
       BaseOptions(
-        validateStatus: (status) => true, // Keep this!
+        validateStatus: (status) => true,
         headers: {
-          // 👇 ADD THIS LINE:
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36",
         },
       ),
     );
-
     _dio.interceptors.add(RadarInterceptor());
   }
 
-  // Test 1: Success (200 OK)
   Future<void> testSuccess() async {
     try {
       await _dio.get('https://api.adviceslip.com/advice');
@@ -83,14 +70,12 @@ class _HomePageState extends State<HomePage> {
         );
       }
     } catch (e) {
-      log("success Error: $e");
+      debugPrint("Error: $e");
     }
   }
 
-  // Test 2: Error (404/403) - Radar should turn RED
   Future<void> testError() async {
-    final response = await _dio.get('https://www.google.com');
-
+    final response = await _dio.get('https://jsonplaceholder.typicode.com/this-page-does-not-exist');
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -101,7 +86,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Test 3: POST Request
   Future<void> testPost() async {
     await _dio.post(
       'https://jsonplaceholder.typicode.com/posts',
@@ -142,7 +126,8 @@ class _HomePageState extends State<HomePage> {
 
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.greenAccent.withOpacity(0.2),
+                  // FIX: withValues
+                  backgroundColor: Colors.greenAccent.withValues(alpha: 0.2),
                   foregroundColor: Colors.greenAccent,
                   padding: const EdgeInsets.all(16),
                 ),
@@ -154,7 +139,8 @@ class _HomePageState extends State<HomePage> {
 
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent.withOpacity(0.2),
+                  // FIX: withValues
+                  backgroundColor: Colors.redAccent.withValues(alpha: 0.2),
                   foregroundColor: Colors.redAccent,
                   padding: const EdgeInsets.all(16),
                 ),
@@ -166,7 +152,8 @@ class _HomePageState extends State<HomePage> {
 
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orangeAccent.withOpacity(0.2),
+                  // FIX: withValues
+                  backgroundColor: Colors.orangeAccent.withValues(alpha: 0.2),
                   foregroundColor: Colors.orangeAccent,
                   padding: const EdgeInsets.all(16),
                 ),

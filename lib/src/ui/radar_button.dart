@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/foundation.dart'; // Import for debugPrint
 import 'radar_dashboard.dart';
 import '../controller/radar_controller.dart';
 
 class RadarButton extends StatefulWidget {
-  final GlobalKey<NavigatorState>? navigatorKey; // Add Key
+  final GlobalKey<NavigatorState>? navigatorKey;
 
   const RadarButton({super.key, this.navigatorKey});
 
@@ -12,7 +13,7 @@ class RadarButton extends StatefulWidget {
 }
 
 class _RadarButtonState extends State<RadarButton> {
-  Offset position = const Offset(300, 500); // Default position
+  Offset position = const Offset(300, 500);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class _RadarButtonState extends State<RadarButton> {
       child: Draggable(
         feedback: Material(
           type: MaterialType.transparency,
-          child: _buildFab(), // No dragging state needed for visual
+          child: _buildFab(),
         ),
         childWhenDragging: Container(),
         onDraggableCanceled: (Velocity velocity, Offset offset) {
@@ -43,13 +44,12 @@ class _RadarButtonState extends State<RadarButton> {
 
         return GestureDetector(
           onTap: () {
-            // FIX: Use the key to find the Navigator!
             if (widget.navigatorKey?.currentState != null) {
               widget.navigatorKey!.currentState!.push(
                 MaterialPageRoute(builder: (_) => const RadarDashboard()),
               );
             } else {
-              print("Error: ApiRadar needs a navigatorKey to open Dashboard!");
+              debugPrint("Error: ApiRadar needs a navigatorKey to open Dashboard!");
             }
           },
           child: Material(
@@ -65,7 +65,8 @@ class _RadarButtonState extends State<RadarButton> {
                 border: Border.all(color: Colors.greenAccent, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.greenAccent.withOpacity(0.4),
+                    // FIX: Use withValues(alpha: ...) instead of withOpacity
+                    color: Colors.greenAccent.withValues(alpha: 0.4),
                     blurRadius: 10,
                     spreadRadius: 2,
                   )

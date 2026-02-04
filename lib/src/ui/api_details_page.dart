@@ -9,13 +9,11 @@ class ApiDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🎨 Dracula Theme Colors
-    const bgDark = Color(0xFF282A36); // Deep Background
-    const bgLighter = Color(0xFF44475A); // Selection/Panel
+    const bgDark = Color(0xFF282A36);
+    const bgLighter = Color(0xFF44475A);
 
-    // Status Logic
     final isError = (log.statusCode ?? 0) >= 400;
-    final statusColor = isError ? const Color(0xFFFF5555) : const Color(0xFF50FA7B); // Dracula Red or Green
+    final statusColor = isError ? const Color(0xFFFF5555) : const Color(0xFF50FA7B);
 
     return DefaultTabController(
       length: 2,
@@ -30,13 +28,14 @@ class ApiDetailsPage extends StatelessWidget {
           ),
           title: Row(
             children: [
-              // Method Chip
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getMethodColor(log.method).withOpacity(0.2),
+                  // FIX: withValues
+                  color: _getMethodColor(log.method).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: _getMethodColor(log.method).withOpacity(0.5)),
+                  // FIX: withValues
+                  border: Border.all(color: _getMethodColor(log.method).withValues(alpha: 0.5)),
                 ),
                 child: Text(
                   log.method,
@@ -49,7 +48,6 @@ class ApiDetailsPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              // URL Text
               Expanded(
                 child: Text(
                   log.url,
@@ -61,15 +59,16 @@ class ApiDetailsPage extends StatelessWidget {
             ],
           ),
           actions: [
-            // Status Code Badge with Glow
             Container(
               margin: const EdgeInsets.only(right: 16),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.2),
+                // FIX: withValues
+                color: statusColor.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: statusColor.withOpacity(0.4), blurRadius: 8, spreadRadius: 0),
+                  // FIX: withValues
+                  BoxShadow(color: statusColor.withValues(alpha: 0.4), blurRadius: 8, spreadRadius: 0),
                 ],
                 border: Border.all(color: statusColor),
               ),
@@ -90,7 +89,7 @@ class ApiDetailsPage extends StatelessWidget {
               ),
               child: TabBar(
                 indicator: BoxDecoration(
-                  color: const Color(0xFFBD93F9), // Dracula Purple
+                  color: const Color(0xFFBD93F9),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 labelColor: Colors.white,
@@ -124,10 +123,10 @@ class ApiDetailsPage extends StatelessWidget {
 
   Color _getMethodColor(String method) {
     switch (method.toUpperCase()) {
-      case 'GET': return const Color(0xFF8BE9FD); // Cyan
-      case 'POST': return const Color(0xFFFFB86C); // Orange
-      case 'PUT': return const Color(0xFFBD93F9); // Purple
-      case 'DELETE': return const Color(0xFFFF5555); // Red
+      case 'GET': return const Color(0xFF8BE9FD);
+      case 'POST': return const Color(0xFFFFB86C);
+      case 'PUT': return const Color(0xFFBD93F9);
+      case 'DELETE': return const Color(0xFFFF5555);
       default: return Colors.white;
     }
   }
@@ -148,7 +147,7 @@ class _InfoSection extends StatelessWidget {
           child: Text(title, style: const TextStyle(color: Color(0xFF6272A4), fontWeight: FontWeight.bold, letterSpacing: 1.2)),
         ),
         SizedBox(
-          height: 300, // Fixed height constraint for nested scrolling feel
+          height: 300,
           child: _CodeEditor(data: data, showCopy: false),
         ),
       ],
@@ -165,7 +164,7 @@ class _CodeEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (data == null || data.toString().isEmpty || data == "null") {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -180,7 +179,6 @@ class _CodeEditor extends StatelessWidget {
     String prettyJson = "";
     bool isJson = false;
 
-    // 🕵️ Try to parse
     if (data is Map || data is List) {
       prettyJson = const JsonEncoder.withIndent('  ').convert(data);
       isJson = true;
@@ -198,11 +196,10 @@ class _CodeEditor extends StatelessWidget {
 
     return Stack(
       children: [
-        // The Code View
         Container(
           width: double.infinity,
           height: double.infinity,
-          color: const Color(0xFF282A36), // Background
+          color: const Color(0xFF282A36),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: isJson
@@ -216,8 +213,6 @@ class _CodeEditor extends StatelessWidget {
             ),
           ),
         ),
-
-        // The Floating Copy Button
         if (showCopy)
           Positioned(
             right: 16,
@@ -241,24 +236,20 @@ class _CodeEditor extends StatelessWidget {
     );
   }
 
-  // 🎨 DRACULA SYNTAX HIGHLIGHTER
   List<TextSpan> _highlightJson(String jsonString) {
     final List<TextSpan> spans = [];
     final lines = jsonString.split('\n');
-
-    // Colors
-    const keyColor = Color(0xFF8BE9FD); // Cyan
-    const stringColor = Color(0xFFF1FA8C); // Yellow/Green
-    const numberColor = Color(0xFFBD93F9); // Purple
-    const boolColor = Color(0xFFFF79C6); // Pink
-    const punctColor = Color(0xFFF8F8F2); // White
+    const keyColor = Color(0xFF8BE9FD);
+    const stringColor = Color(0xFFF1FA8C);
+    const numberColor = Color(0xFFBD93F9);
+    const boolColor = Color(0xFFFF79C6);
+    const punctColor = Color(0xFFF8F8F2);
 
     for (var i = 0; i < lines.length; i++) {
       final line = lines[i];
-      // Line Number (Optional - adds "Pro" feel)
       spans.add(TextSpan(
         text: "${i + 1}  ",
-        style: const TextStyle(color: Color(0xFF6272A4), fontSize: 11), // Comment Color
+        style: const TextStyle(color: Color(0xFF6272A4), fontSize: 11),
       ));
 
       if (line.contains(':')) {
@@ -284,10 +275,10 @@ class _CodeEditor extends StatelessWidget {
       clean = value.substring(0, value.lastIndexOf(','));
       suffix = ",";
     } else if (value.trimRight().endsWith(']')) {
-      // simple fix for inline array closers
+      // simple fix
     }
 
-    TextStyle style = TextStyle(color: str); // Default String
+    TextStyle style = TextStyle(color: str);
 
     if (clean.contains('"')) {
       style = TextStyle(color: str);

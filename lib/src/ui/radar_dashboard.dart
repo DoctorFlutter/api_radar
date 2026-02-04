@@ -9,7 +9,7 @@ class RadarDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212), // Deep Dark Background
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         elevation: 0,
         title: const Text("API Radar 📡", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -58,7 +58,6 @@ class _ProApiTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine Status Color
     final code = log.statusCode ?? 0;
     final isError = code >= 400;
     final statusColor = isError ? Colors.redAccent : Colors.greenAccent;
@@ -68,7 +67,8 @@ class _ProApiTile extends StatelessWidget {
       color: const Color(0xFF1E1E1E),
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
-          side: BorderSide(color: isError ? Colors.red.withOpacity(0.5) : Colors.transparent),
+        // FIX: withValues
+          side: BorderSide(color: isError ? Colors.red.withValues(alpha: 0.5) : Colors.transparent),
           borderRadius: BorderRadius.circular(12)
       ),
       child: InkWell(
@@ -82,13 +82,13 @@ class _ProApiTile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Row 1: Method + URL
               Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: methodColor.withOpacity(0.2),
+                      // FIX: withValues
+                      color: methodColor.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -108,11 +108,8 @@ class _ProApiTile extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-
-              // Row 2: Status Code + Duration + Time
               Row(
                 children: [
-                  // Status Chip
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
@@ -132,7 +129,6 @@ class _ProApiTile extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // Duration
                   Icon(Icons.timer_outlined, color: Colors.grey[600], size: 14),
                   const SizedBox(width: 4),
                   Text(
